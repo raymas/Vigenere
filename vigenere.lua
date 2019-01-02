@@ -5,7 +5,7 @@
 
 -- LANGUAGE FREQUENCIES
 english = "eariotnslcudpmhgbfywkvxzjq"
-french = "eaisnrtoludcmpégbvhfqyxjèàkwzêçôâîûùï üëö"
+french = "eaisnrtoludcmpégbvhfqyxjèàkwzêçôâîûùïüëö"
 spanish = string.lower("")
 
 -- 1. Cracking key length
@@ -49,14 +49,15 @@ function keylengthguess(text, language, maxkeylength, verbose)
 end
 
 
--- 2. Cracking key length
+-- 2. Cracking key
 function guessingKey(text, language, keylength, verbose)
 
   if (verbose == nil) then verbose = false end
-  local charmap = {}
-  local keyindex = 0
+  local key = "";
 
   for index = 1, keylength, 1 do
+    local charmap = {}
+    local keyindex = 0
     for i = 1, #text do
       local c = text:lower():sub(i,i)
       if language:find(c) then
@@ -66,7 +67,16 @@ function guessingKey(text, language, keylength, verbose)
         keyindex = keyindex + 1
       end
     end
-
+    -- guessing statistically the key
+    -- printDict(charmap)
+    local sortedOccurences = getKeysSortedByValue(charmap, function(a, b) return a < b end)
+    printDict(sortedOccurences)
+    print("\n")
+    local maxLetter = string.char(((string.byte(sortedOccurences[#sortedOccurences]) - string.byte(language:sub(1, 1))) % 26) + string.byte('a'))
+    key = key .. maxLetter
+  end
+  return key
+end
 
 
 -- N/A usefull functions
@@ -86,25 +96,26 @@ function getKeysSortedByValue(tbl, sortFunction)
 end
 
 
-ret = keylengthguess([===[uayslumk jfx hew ibqg. afuayslumk jfx hew ioqg. afuayslumk jfx hew ibqg. af
-ig ydfj, pmyuwt dnx ldynaig ydfj, piyuwt dnx ldynaig ydfj, piyuwt dnx ldyna
-taljqse mvnil mupngj, gxataljqse mvnil mupngj, gxataljqsl mvnil mupngj, gxa
-yfjka pqjuqc hznjw pos wuyfjka pqjuqc hztjw pos wuyfjka pqjuqc hznjw pos wu
-n qjvnpmsv yut, qjnd. krsn qjvnpmsv yut, qjnd. krsn qjsnpmsv yut, qjnd. krs
-mvjov cezjbxcfezat uqgcmsmvjov cezjbxcfezat uqgcmsmvjov cezjbxcfgzat uqgcms
-vbik ulpo. vyahsavfx ngc vbik ulpo. vyahsavfx ngc vbik ulpo. vyahsavfx egc
-ucua fvy bmg, kfrkjv lucmucua fvy bmg, kfrkjv lucmccua fvy bmg, kfrkjv lucm
-iux kwjrlnetyox, ev neioqiux kwjrln tyox, ev neioqiux kwjrlnetyox, ev neioq
-dwa .vetdadjck fardbq hnxdwa .vetdadjck fardbq hnxdwa .vetdadjck fardbqwhnx
-tur, einbagx phhvz. abnwytur, einbagx phhvz. abnwytur, einbegx phhvz. abnwy
-oc ghbta dac, wvrzt. vqtfoc ghbtaodac, wvrzt. vqtfoc ghbta dac, wvrzt. vqtf
-qa, xkrzm, yiyaj cnq  lvpqa, xkrzm, yiyaj cnq  lvpqa, xkrzm, yiyaj cnq  avp
-ocfv edcnozbdjmm, wjzy fhocfv edcnozbdjmm, wjzyefhocfv edcnozbdjmm, wjzyefh
-qlejrt gefk dlljvnh. nip qlejst gefk dlljvnh. nip qlejst gefk dlljvnh. nip
-jvktil. qsat bncjlota. nejvktil. qsat bncjlota. nejvkhil. qsat bncjlota. ne
-dulxyskfnm. zaj ntl ftugidulxyskfnm. zaj ntl ftugidulxyskfnm. zwj ntl ftugi
-tqo crqtswzj xrje jfwar, tqo orqtswzj xrje jfwar, tqo crqtswzj xrje jfwar,
-qhknaz gsxqyrc aelxiv, qaqhknaz gsxqyrc aelxiv, qaqhknaz gsxqyrc aelxiv, qt
-]===], french)
+-- ret = keylengthguess([===[uayslumk jfx hew ibqg. afuayslumk jfx hew ioqg. afuayslumk jfx hew ibqg. af
+-- ig ydfj, pmyuwt dnx ldynaig ydfj, piyuwt dnx ldynaig ydfj, piyuwt dnx ldyna
+-- taljqse mvnil mupngj, gxataljqse mvnil mupngj, gxataljqsl mvnil mupngj, gxa
+-- yfjka pqjuqc hznjw pos wuyfjka pqjuqc hztjw pos wuyfjka pqjuqc hznjw pos wu
+-- n qjvnpmsv yut, qjnd. krsn qjvnpmsv yut, qjnd. krsn qjsnpmsv yut, qjnd. krs
+-- mvjov cezjbxcfezat uqgcmsmvjov cezjbxcfezat uqgcmsmvjov cezjbxcfgzat uqgcms
+-- vbik ulpo. vyahsavfx ngc vbik ulpo. vyahsavfx ngc vbik ulpo. vyahsavfx egc
+-- ucua fvy bmg, kfrkjv lucmucua fvy bmg, kfrkjv lucmccua fvy bmg, kfrkjv lucm
+-- iux kwjrlnetyox, ev neioqiux kwjrln tyox, ev neioqiux kwjrlnetyox, ev neioq
+-- dwa .vetdadjck fardbq hnxdwa .vetdadjck fardbq hnxdwa .vetdadjck fardbqwhnx
+-- tur, einbagx phhvz. abnwytur, einbagx phhvz. abnwytur, einbegx phhvz. abnwy
+-- oc ghbta dac, wvrzt. vqtfoc ghbtaodac, wvrzt. vqtfoc ghbta dac, wvrzt. vqtf
+-- qa, xkrzm, yiyaj cnq  lvpqa, xkrzm, yiyaj cnq  lvpqa, xkrzm, yiyaj cnq  avp
+-- ocfv edcnozbdjmm, wjzy fhocfv edcnozbdjmm, wjzyefhocfv edcnozbdjmm, wjzyefh
+-- qlejrt gefk dlljvnh. nip qlejst gefk dlljvnh. nip qlejst gefk dlljvnh. nip
+-- jvktil. qsat bncjlota. nejvktil. qsat bncjlota. nejvkhil. qsat bncjlota. ne
+-- dulxyskfnm. zaj ntl ftugidulxyskfnm. zaj ntl ftugidulxyskfnm. zwj ntl ftugi
+-- tqo crqtswzj xrje jfwar, tqo orqtswzj xrje jfwar, tqo crqtswzj xrje jfwar,
+-- qhknaz gsxqyrc aelxiv, qaqhknaz gsxqyrc aelxiv, qaqhknaz gsxqyrc aelxiv, qt
+-- ]===], french)
 
-printDict(ret)
+ret = guessingKey("nGmni Tskcxipo esdskkxgmejvc !", french, 3)
+print(ret)
