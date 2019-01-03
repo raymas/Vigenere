@@ -85,7 +85,8 @@ function decrypt(text, key, language)
   for i = 1, #text, 1 do
     local c = text:lower():sub(i,i)
     if language:find(c) then
-      decrypted = decrypted .. string.char(((26 + alphabet:find(c) - alphabet:find(key:sub(keyindex,keyindex))) % 26) + string.byte('a'))
+      local k = key:sub(keyindex,keyindex)
+      decrypted = decrypted .. string.char(((26 + letterValue(c) - letterValue(k)) % 26) + string.byte('a'))
       keyindex = (keyindex + 1) % #key + 1
     else
       decrypted = decrypted .. c
@@ -103,7 +104,8 @@ function encrypt(text, key, language)
   for i = 1, #text, 1 do
     local c = text:lower():sub(i,i)
     if language:find(c) then
-      crypted = crypted .. string.char(((24 + alphabet:find(c) + alphabet:find(key:sub(keyindex,keyindex))) % 26) + string.byte('a')) --24 (lua is 1 indexed...)
+      local k = key:sub(keyindex,keyindex)
+      crypted = crypted .. string.char(((26 + letterValue(c) + letterValue(k)) % 26) + string.byte('a'))
       keyindex = (keyindex + 1) % #key + 1
     else
       crypted = crypted .. c
@@ -129,13 +131,15 @@ function getKeysSortedByValue(tbl, sortFunction)
   return keys
 end
 
-
+function letterValue(letter)
+  return (letter:byte() - ("a"):byte())
+end
 
 
 -- MAIN FUNCTION
 -- ret = guessingKey("nGmni Tskcxipo esdskkxgmejvc !", french, 3)
 -- print(ret)
-r = encrypt("aaa", "KEY", french)
-d = decrypt(r, "KEY", french)
+r = encrypt("aaa", "bbb", french)
+d = decrypt(r, "bbb", french)
 print(r)
 print(d)
