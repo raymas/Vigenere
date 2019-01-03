@@ -4,6 +4,7 @@
 -- decryptor for vigenere method
 
 -- LANGUAGE FREQUENCIES
+alphabet = "abcdefghijklmnopqrstuvwxyz"
 english = "eariotnslcudpmhgbfywkvxzjq"
 french = "eaisnrtoludcmpégbvhfqyxjèàkwzêçôâîûùïüëö"
 spanish = string.lower("")
@@ -36,7 +37,7 @@ function keylengthguess(text, language, maxkeylength, verbose)
     local occurencesOfMaxLetter = charmap[sortedOccurences[#sortedOccurences]]
     local minProb = occurencesOfMinLetter / keyindex * keylength * 100
     local maxProb = occurencesOfMaxLetter / keyindex * keylength * 100
-    -- the probability of key length is greater than previuously : outputing results
+    -- the probability of key length is greater than previuously : updating results
     if (maxProb - minProb) > minMax then
       minMax = maxProb - minProb
       results["prob"] = minMax
@@ -68,14 +69,47 @@ function guessingKey(text, language, keylength, verbose)
       end
     end
     -- guessing statistically the key
-    -- printDict(charmap)
     local sortedOccurences = getKeysSortedByValue(charmap, function(a, b) return a < b end)
-    printDict(sortedOccurences)
-    print("--END--")
     local maxLetter = string.char(((string.byte(sortedOccurences[#sortedOccurences]) - string.byte(language:sub(1, 1))) % 26) + string.byte('a'))
     key = key .. maxLetter
   end
   return key
+end
+
+
+-- 3. Decrypt
+function decrypt(text, key, language)
+  local decrypted = ""
+  local keyindex = 1
+  key = key:lower()
+  for i = 1, #text, 1 do
+    local c = text:lower():sub(i,i)
+    if language:find(c) then
+      decrypted = decrypted .. string.char(((26 + alphabet:find(c) - alphabet:find(key:sub(keyindex,keyindex))) % 26) + string.byte('a'))
+      keyindex = (keyindex + 1) % #key + 1
+    else
+      decrypted = decrypted .. c
+    end
+  end
+  return decrypted
+end
+
+
+-- 4. Encrypt
+function encrypt(text, key, language)
+  local crypted = ""
+  local keyindex = 1
+  key = key:lower()
+  for i = 1, #text, 1 do
+    local c = text:lower():sub(i,i)
+    if language:find(c) then
+      crypted = crypted .. string.char(((24 + alphabet:find(c) + alphabet:find(key:sub(keyindex,keyindex))) % 26) + string.byte('a')) --24 (lua is 1 indexed...)
+      keyindex = (keyindex + 1) % #key + 1
+    else
+      crypted = crypted .. c
+    end
+  end
+  return crypted
 end
 
 
@@ -95,5 +129,13 @@ function getKeysSortedByValue(tbl, sortFunction)
   return keys
 end
 
-ret = guessingKey("nGmni Tskcxipo esdskkxgmejvc !", french, 3)
-print(ret)
+
+
+
+-- MAIN FUNCTION
+-- ret = guessingKey("nGmni Tskcxipo esdskkxgmejvc !", french, 3)
+-- print(ret)
+r = encrypt("aaa", "KEY", french)
+d = decrypt(r, "KEY", french)
+print(r)
+print(d)
