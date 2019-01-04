@@ -87,7 +87,8 @@ function decrypt(text, key, language)
     if language:find(c) then
       local k = key:sub(keyindex,keyindex)
       decrypted = decrypted .. string.char(((26 + letterValue(c) - letterValue(k)) % 26) + string.byte('a'))
-      keyindex = (keyindex + 1) % #key + 1
+      keyindex = (keyindex + 1) % (#key + 1)
+      if keyindex == 0 then keyindex = 1 end
     else
       decrypted = decrypted .. c
     end
@@ -106,7 +107,8 @@ function encrypt(text, key, language)
     if language:find(c) then
       local k = key:sub(keyindex,keyindex)
       crypted = crypted .. string.char(((26 + letterValue(c) + letterValue(k)) % 26) + string.byte('a'))
-      keyindex = (keyindex + 1) % #key + 1
+      keyindex = (keyindex + 1) % (#key + 1)
+      if keyindex == 0 then keyindex = 1 end
     else
       crypted = crypted .. c
     end
@@ -139,7 +141,7 @@ end
 -- MAIN FUNCTION
 -- ret = guessingKey("nGmni Tskcxipo esdskkxgmejvc !", french, 3)
 -- print(ret)
-r = encrypt("aaa", "bbb", french)
-d = decrypt(r, "bbb", french)
+r = encrypt("Vigenere", "lua", french)
+d = decrypt(r, "lua", french)
 print(r)
 print(d)
