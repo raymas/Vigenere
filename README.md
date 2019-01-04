@@ -1,12 +1,12 @@
 # Vigenere
 
 Some lua tools for vigenere encryption, decryption and brute-force.<br>
-Based on the basic [Blaise de Vigenère algorithm](https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher)
+Based on the basic [Blaise de Vigenère algorithm](https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher).
 
 ## Brief Introduction
 
 Vigenère cipher is a enhancement of Caesar's cipher. This is a substitution encryption technique as plain text letters are replaced by some fixed number of positions down the alphabet.<br>
-To implement it we need a plain-text and a key. Assuming the text is ** *Vigenere* ** and the key is ** *lua* ** . We map every alphabet character to its position :
+To implement it we need a plain-text and a key. Assuming the text is *Vigenere* and the key is *lua* . We map every alphabet character to its position :
 ```
 a = 0, b = 1, c = 2, [...] z = 25
 ```
@@ -17,7 +17,7 @@ LUALUALU
 ||||||||
 GCGPHECY
 ```
-Encoded text is ```GCGPHECY```
+Encoded text is ```GCGPHECY```.
 
 ## Getting Started
 
