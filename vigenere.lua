@@ -163,14 +163,41 @@ function getIndex(key, list)
   return nil
 end
 
+function split(s, delimiter)
+    result = {};
+    for match in (s..delimiter):gmatch("(.-)"..delimiter) do
+        table.insert(result, match);
+    end
+    return result;
+end
+
+
 
 -- Help
 function printHelp()
-  print("Usage : lua vigenere.lua [OPTIONS]")
+  print("Usage : lua vigenere.lua [MODE] [OPTIONS]")
   print("")
-  print("-e\tencrypt by entering a key, and a text")
-  print("-d\tdecrypt by entering a key, and a text")
-  print("-c\tcrack")
+  print("# MODES: #")
+  print("\te\tencrypt by entering a key, and a text")
+  print("\td\tdecrypt by entering a key, and a text")
+  print("\tc\tcrack")
+  print("#-------------------------------------------#")
+  print("\te parameter : lua vigenere.lua e [OPTIONS --raw | OPTIONS --file] key")
+  print("")
+  print("\t\t--raw 'text in console'")
+  print("\t\t--file [path to file]")
+  print("#-------------------------------------------#")
+  print("\td parameter : lua vigenere.lua [OPTIONS --raw | OPTIONS --file] key")
+  print("")
+  print("\t\t--raw 'text in console'")
+  print("\t\t--file [path to file]")
+  print("#-------------------------------------------#")
+  print("\tc parameter : lua vigenere.lua [(OPTIONS --raw | OPTIONS --file) && --maxkeylength keylength]")
+  print("\t\t--raw 'text in console'")
+  print("\t\t--file [path to file]")
+  print("\t\t--maxkeylength [integer keylength] : this parameter is mandatory")
+  print("\t\t--trylength [lower:upper] : this parameter is mandatory and should not be used with maxkeylength")
+  print("#-------------------------------------------#")
 end
 
 -- TEST FUNCTION
@@ -277,6 +304,8 @@ end
 function cmdCrack(cli)
   local string = nil
   local keylength = nil
+  local lower = nil
+  local upper = nil
   local language = english
 
   if isInList("--file", cli) then
@@ -303,16 +332,27 @@ function cmdCrack(cli)
     if cli[mkl] ~= nil then
       keylength = cli[mkl]
     end
+  elseif isInList("--trylength", cli) then
+    local tl = getIndex("--trylength", cli) + 1
+    if cli[tl] ~= nil then
+      lower, upper = cli[tl]:match("([^,]+):([^,]+)")
+    end
   end
 
   if keylength then
     local keyguess = guessingKey(string, language, keylength)
+    print("Key guess is : " .. keyguess)
     print(decrypt(string, keyguess, language))
+  elseif lower and upper then
+    for try = tonumber(lower), tonumber(upper), 1 do
+      local keyguess = guessingKey(string, language, try)
+      print("[" .. try .. "] Key guess is : " .. keyguess)
+    end
   else
     local len = keylengthguess(string, english, 5)
     print("Length guess is : " .. len.keylength)
     local pseudoKey = guessingKey(string, english, len.keylength)
-    print("Psuedo key guess is : ".. pseudoKey)
+    print("Key guess is : ".. pseudoKey)
     print(decrypt(string, pseudoKey, language))
   end
 end
