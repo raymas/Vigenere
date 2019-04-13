@@ -15,7 +15,7 @@ spanish = "eaosnrildtucmpbhqyvgÓÍfjzÁÉÑxÚkwÜ"
 -- 1. Cracking key length
 function keylengthguess(text, language, maxkeylength, verbose)
 
-  if (maxkeylength == nil) then maxkeylength = 10 end
+  if (maxkeylength == nil) then maxkeylength = 20 end
   if (verbose == nil) then verbose = false end
 
   local results = {}
@@ -349,7 +349,7 @@ function cmdCrack(cli)
       print("[" .. try .. "] Key guess is : " .. keyguess)
     end
   else
-    local len = keylengthguess(string, english, 5)
+    local len = keylengthguess(string, english)
     print("Length guess is : " .. len.keylength)
     local pseudoKey = guessingKey(string, english, len.keylength)
     print("Key guess is : ".. pseudoKey)

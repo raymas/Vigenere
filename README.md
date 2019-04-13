@@ -83,7 +83,7 @@ Options required either one or the other.
 Options optional either one or the other.
 
 ```Bash
---maxkeylength [integer of maximum]
+--maxkeylength [integer of maximum key length by default it is 20]
 --trylength [minimum length:maximum length]
 ```
 
