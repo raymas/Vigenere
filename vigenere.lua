@@ -350,7 +350,7 @@ function cmdCrack(cli)
     end
   else
     local len = keylengthguess(string, english)
-    print("Length guess is : " .. len.keylength)
+    print("Length guess is : " .. len.keylength)w
     local pseudoKey = guessingKey(string, english, len.keylength)
     print("Key guess is : ".. pseudoKey)
     print(decrypt(string, pseudoKey, language))
